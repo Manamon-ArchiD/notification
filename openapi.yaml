@@ -1,0 +1,116 @@
+openapi: 3.0.3
+info:
+  title: Service Notifications API
+  description: API pour gérer les notifications liées aux badges gagnés, invitations, mises à jour de matchs, etc.
+  version: 1.0.0
+  
+paths:
+  /notifications:
+    post:
+      summary: Envoyer une notification
+      description: Permet à un administrateur ou un service d'envoyer une notification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  description: Identifiant de l'utilisateur destinataire de la notification.
+                  example: "12345"
+                title:
+                  type: string
+                  description: Titre de la notification.
+                  example: "Badge débloqué"
+                message:
+                  type: string
+                  description: Contenu de la notification.
+                  example: "Félicitations, vous avez débloqué le badge 'Explorateur' !"
+              required:
+                - userId
+                - title
+                - message
+      responses:
+        '201':
+          description: Notification envoyée avec succès.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notificationId:
+                    type: string
+                    description: Identifiant unique de la notification créée.
+                    example: "notif_67890"
+        '400':
+          description: Erreur de validation des données d'entrée.
+        '500':
+          description: Erreur serveur interne.
+
+  /notifications/{userId}:
+    get:
+      summary: Récupérer les notifications d'un utilisateur
+      description: Retourne les notifications associées à un utilisateur donné.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Identifiant de l'utilisateur.
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: Liste des notifications de l'utilisateur.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    notificationId:
+                      type: string
+                      description: Identifiant unique de la notification.
+                      example: "notif_67890"
+                    title:
+                      type: string
+                      description: Titre de la notification.
+                      example: "Badge débloqué"
+                    message:
+                      type: string
+                      description: Contenu de la notification.
+                      example: "Félicitations, vous avez débloqué le badge 'Explorateur' !"
+                    createdAt:
+                      type: string
+                      format: date-time
+                      description: Date et heure de création de la notification.
+                      example: "2025-01-17T10:00:00Z"
+        '404':
+          description: Utilisateur ou notifications non trouvés.
+        '500':
+          description: Erreur serveur interne.
+
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        notificationId:
+          type: string
+          description: Identifiant unique de la notification.
+        userId:
+          type: string
+          description: Identifiant de l'utilisateur destinataire.
+        title:
+          type: string
+          description: Titre de la notification.
+        message:
+          type: string
+          description: Contenu de la notification.
+        createdAt:
+          type: string
+          format: date-time
+          description: Date et heure de création de la notification.
