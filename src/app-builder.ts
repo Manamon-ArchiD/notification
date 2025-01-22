@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import bodyParser from 'body-parser';
-import { Client, connect } from 'ts-postgres';
+import { connect } from 'ts-postgres';
 import { DatabaseService } from './database/database-service';
 import { PostgresService } from './database/postgres-service';
 import { MockService } from './database/mock-service';

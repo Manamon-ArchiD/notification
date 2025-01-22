@@ -1,11 +1,9 @@
-const request = require('supertest');
 import OpenAPIResponseValidator from 'openapi-response-validator';
-const yaml = require('js-yaml');
-const fs = require('fs');
+import yaml from 'js-yaml';
+import fs from 'fs';
 import supertest from 'supertest';
 import { Builder } from '../src/app-builder';
 import TestAgent from 'supertest/lib/agent';
-import { DatabaseService } from '../src/database/database-service';
 
 const openAPISpec = yaml.load(fs.readFileSync('./docs/openapi.yaml', 'utf8'));
 
@@ -15,7 +13,6 @@ const responseValidator = new OpenAPIResponseValidator({
 
 describe('API Tests', () => {
   let request: TestAgent;
-  let database: DatabaseService;
 
   beforeAll(async () => {
     const builder = new Builder();
@@ -24,7 +21,6 @@ describe('API Tests', () => {
       .configureExpress()
       .configureRoutes();
     request = supertest(builder.App);
-    database = builder.Database;
   });
 
   it('POST /notifications - Devrait créer une notification', async () => {
