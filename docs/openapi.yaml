@@ -1,12 +1,18 @@
 openapi: 3.0.3
+servers:
+  - url: https://api.example.com
 info:
   title: Service Notifications API
   description: API pour gérer les notifications liées aux badges gagnés, invitations, mises à jour de matchs, etc.
   version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
   
 paths:
   /notifications:
     post:
+      operationId: sendNotification
       summary: Envoyer une notification
       description: Permet à un administrateur ou un service d'envoyer une notification.
       requestBody:
@@ -51,6 +57,7 @@ paths:
 
   /notifications/{userId}:
     get:
+      operationId: getUserNotifications
       summary: Récupérer les notifications d'un utilisateur
       description: Retourne les notifications associées à un utilisateur donné.
       parameters:
@@ -69,25 +76,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    notificationId:
-                      type: string
-                      description: Identifiant unique de la notification.
-                      example: "notif_67890"
-                    title:
-                      type: string
-                      description: Titre de la notification.
-                      example: "Badge débloqué"
-                    message:
-                      type: string
-                      description: Contenu de la notification.
-                      example: "Félicitations, vous avez débloqué le badge 'Explorateur' !"
-                    createdAt:
-                      type: string
-                      format: date-time
-                      description: Date et heure de création de la notification.
-                      example: "2025-01-17T10:00:00Z"
+                  $ref: '#/components/schemas/Notification'
         '404':
           description: Utilisateur ou notifications non trouvés.
         '500':
