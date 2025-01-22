@@ -1,11 +1,11 @@
-name: CI Pipeline
+name: Jtest
 
 on:
   push:
   pull_request:
 
 jobs:
-  lint-and-test:
+  jtest:
     runs-on: ubuntu-latest
 
     steps:

@@ -1,11 +1,11 @@
-name: CI Pipeline
+name: ESLint
 
 on:
   push:
   pull_request:
 
 jobs:
-  lint-and-test:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
