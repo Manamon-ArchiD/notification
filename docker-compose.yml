@@ -7,7 +7,6 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: npm run dev
   
   postgres:
     image: "postgres:13"

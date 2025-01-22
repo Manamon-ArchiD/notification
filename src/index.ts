@@ -1,26 +1,11 @@
-import express from 'express';
-import { connect } from 'ts-postgres';
+import { Builder } from "./app-builder";
 
-const PORT = 3000;
+const init = async () => {
+    console.log("===== Server =====");
+    const port = parseInt(process.env.PORT || "3000");
+    const builder = new Builder();
+    const serverApp = await builder.build(port);
+    serverApp.start();
+};
 
-(async () => {
-  const client = await connect({
-    host: 'localhost',
-    port: 5432,
-    database: 'postgres',
-    user: 'postgres',
-    password: 'postgres'
-  });
-
-  const app = express();
-
-  app.get('/', (req, res) => {
-    res.send('Hello, TypeScript with HMR d!'); 
-  });
-  
-  app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-  });
-
-  await client.end();
-})();
+init();
