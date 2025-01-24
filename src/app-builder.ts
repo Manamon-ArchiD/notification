@@ -9,6 +9,9 @@ import amqp from 'amqplib';
 import HelloController from './controllers/hello';
 import EventService from './event/event-service';
 import RabbitService from './event/rabbit-service';
+import path from 'path';
+import YAML from 'yamljs';
+import swaggerUi from 'swagger-ui-express';
 
 export class Builder {
     private database!: DatabaseService;
@@ -88,11 +91,17 @@ export class Builder {
         return this;
     }
 
+    configureSwagger = () => {
+        const swaggerDocument = YAML.load(path.join(__dirname, '../docs/openapi.yaml'));
+        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    }
+
     build = async (port: number, mock = false) => {
         await this.configureDatabase(mock);
         await this.configureEvents(mock);
         this.configureExpress();
         this.configureRoutes();
+        this.configureSwagger();
         return new ServerApplication(this.app, port);
     }
 

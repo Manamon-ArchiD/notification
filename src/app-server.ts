@@ -5,7 +5,9 @@ export class ServerApplication {
 
     start = () => {
         this.app.listen(this.port, () => {
+            console.log("====================================");
             console.log(`Express is listening at port ${this.port}`);
+            console.log("====================================");
         })
     }
 }
