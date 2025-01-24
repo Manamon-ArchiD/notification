@@ -20,6 +20,7 @@ export class NotificationsController {
 
             const notification: Omit<Notification, 'notificationId' | 'createdAt'> = { userId, title, message };
             const createdNotification = await this.db.createNotification(notification);
+            this.events.sendEvent({data: notification, action: "notification"});
 
             res.status(201).json(createdNotification);
         } catch (error) {
