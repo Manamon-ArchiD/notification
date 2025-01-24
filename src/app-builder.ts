@@ -90,6 +90,7 @@ export class Builder {
     configureRoutes = () => {
         this.app.get("/", (new HelloController(this.database, this.events)).handle);
         this.app.post("/notifications", (new NotificationsController(this.database, this.events)).createNotification);
+        this.app.get("/notifications/:userId", (new NotificationsController(this.database, this.events)).getUserNotifications);
         return this;
     }
 

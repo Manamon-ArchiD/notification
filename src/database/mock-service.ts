@@ -12,4 +12,8 @@ export class MockService implements DatabaseService {
             resolve(createdNotification);
         });
     }   
+
+    getUserNotifications(userId: string): Promise<Notification[]> {
+        throw new Error("Method not implemented.");
+    }
 }
