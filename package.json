@@ -19,7 +19,8 @@
     "amqplib": "^0.10.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "ts-postgres": "^2.0.4"
+    "ts-postgres": "^2.0.4",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.6",

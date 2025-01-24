@@ -3,12 +3,12 @@ import bodyParser from 'body-parser';
 import { connect } from 'ts-postgres';
 import { DatabaseService } from './database/database-service';
 import { PostgresService } from './database/postgres-service';
-import { MockService } from './database/mock-service';
 import { ServerApplication } from './app-server';
 import amqp from 'amqplib';
 import HelloController from './controllers/hello';
 import EventService from './event/event-service';
 import RabbitService from './event/rabbit-service';
+import { NotificationsController } from './controllers/notification';
 
 export class Builder {
     private database!: DatabaseService;
@@ -28,7 +28,7 @@ export class Builder {
     configureDatabase = async (mock = false) => {
         if (mock) { 
             console.log("Using mocked database");
-            this.database = new MockService();
+            //this.database = new MockService();
         } else {
             console.log("Using Postgres database");
             const getDatabase = async () => {
@@ -85,6 +85,7 @@ export class Builder {
 
     configureRoutes = () => {
         this.app.get("/", (new HelloController(this.database, this.events)).handle);
+        this.app.post("/notifications", (new NotificationsController(this.database, this.events)).createNotification);
         return this;
     }
 
