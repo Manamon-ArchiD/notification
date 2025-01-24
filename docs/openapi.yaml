@@ -2,6 +2,8 @@ openapi: 3.0.3
 servers:
   - url: http://localhost:3000
     description: Serveur de développement
+  - url: http://10.144.199.3:3000
+    description: Localhost de l'équipe
 info:
   title: Service Notifications API
   description: API pour gérer les notifications liées aux badges gagnés, invitations, mises à jour de matchs, etc.
