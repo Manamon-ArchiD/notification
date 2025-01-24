@@ -12,6 +12,7 @@ import { NotificationsController } from './controllers/notification';
 import path from 'path';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
+import { MockService } from './database/mock-service';
 
 export class Builder {
     private database!: DatabaseService;
@@ -31,7 +32,7 @@ export class Builder {
     configureDatabase = async (mock = false) => {
         if (mock) { 
             console.log("Using mocked database");
-            //this.database = new MockService();
+            this.database = new MockService();
         } else {
             console.log("Using Postgres database");
             const getDatabase = async () => {

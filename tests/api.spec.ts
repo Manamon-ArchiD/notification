@@ -5,7 +5,7 @@ import supertest from 'supertest';
 import { Builder } from '../src/app-builder';
 import TestAgent from 'supertest/lib/agent';
 
-const openAPISpec = yaml.load(fs.readFileSync('./docs/openapi.yaml', 'utf8'));
+const openAPISpec = yaml.load(fs.readFileSync('./docs/openapi.yaml', 'utf8')) as any;
 
 const responseValidator = new OpenAPIResponseValidator({
   responses: openAPISpec.paths['/notifications'].post.responses,
@@ -24,7 +24,12 @@ describe('API Tests', () => {
   });
 
   it('POST /notifications - Devrait créer une notification', async () => {
-    const exampleNotification = openAPISpec.paths['/notifications'].post.requestBody.content['application/json'].example;
+    const properties = openAPISpec.paths['/notifications'].post.requestBody.content['application/json'].schema.properties;
+    // exampleNotification use properties to create a valid notification
+    let exampleNotification: any = {};
+    Object.keys(properties).forEach((key) => {
+      exampleNotification[key] = properties[key].example;
+    });
 
     const response = await request
       .post('/notifications')
@@ -51,5 +56,13 @@ describe('API Tests', () => {
       .send();
 
     expect(response.statusCode).toBe(200);
+  });
+
+  it('GET /notifications/1 - Devrait retourner une erreur 404 si l\'utilisateur n\'existe pas', async () => {
+    const response = await request
+      .get('/notifications/999')
+      .send();
+
+    expect(response.statusCode).toBe(404);
   });
 });
