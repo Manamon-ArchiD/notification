@@ -7,23 +7,23 @@ export class NotificationsController {
     constructor(private db: DatabaseService, private events: EventService) {
         this.createNotification = this.createNotification.bind(this);
     }
-    // POST: Créer une notification
-    async createNotification(req: Request, res: Response): Promise<void> {
+
+    async createNotification(req: Request, res: Response) {
         try {
-        const { userId, title, message } = req.body;
+            const { userId, title, message } = req.body;
 
-        if (!userId || !title || !message) {
-            res.status(400).json({ error: 'userId, title, and message are required.' });
-            return;
-        }
+            if (!userId || !title || !message) {
+                res.status(400).json({ error: 'userId, title, and message are required.' });
+                return;
+            }
 
-        const notification: Omit<Notification, 'notificationId' | 'createdAt'> = { userId, title, message };
-        const createdNotification = await this.db.createNotification(notification);
+            const notification: Omit<Notification, 'notificationId' | 'createdAt'> = { userId, title, message };
+            const createdNotification = await this.db.createNotification(notification);
 
-        res.status(201).json(createdNotification);
+            res.status(201).json(createdNotification);
         } catch (error) {
-        console.error('Error creating notification:', error);
-        res.status(500).json({ error: 'Internal server error.' });
+            console.error('Error creating notification:', error);
+            res.status(500).json({ error: 'Internal server error.' });
         }
     }
 }
