@@ -7,10 +7,6 @@ import TestAgent from 'supertest/lib/agent';
 
 const openAPISpec = yaml.load(fs.readFileSync('./docs/openapi.yaml', 'utf8')) as any;
 
-const responseValidator = new OpenAPIResponseValidator({
-  responses: openAPISpec.paths['/notifications'].post.responses,
-});
-
 describe('API Tests', () => {
   let request: TestAgent;
 
@@ -26,7 +22,7 @@ describe('API Tests', () => {
   it('POST /notifications - Devrait créer une notification', async () => {
     const properties = openAPISpec.paths['/notifications'].post.requestBody.content['application/json'].schema.properties;
     // exampleNotification use properties to create a valid notification
-    let exampleNotification: any = {};
+    const exampleNotification: any = {};
     Object.keys(properties).forEach((key) => {
       exampleNotification[key] = properties[key].example;
     });
@@ -38,6 +34,10 @@ describe('API Tests', () => {
     expect(response.statusCode).toBe(201);
 
     // Valider la réponse
+    const responseValidator = new OpenAPIResponseValidator({
+      responses: openAPISpec.paths['/notifications'].post.responses,
+      components: openAPISpec.components,
+    });
     const validationError = responseValidator.validateResponse(response.statusCode, response.body);
     expect(validationError).toBeUndefined(); // Aucun problème de validation
   });
@@ -56,6 +56,13 @@ describe('API Tests', () => {
       .send();
 
     expect(response.statusCode).toBe(200);
+
+    const responseValidator = new OpenAPIResponseValidator({
+      responses: openAPISpec.paths['/notifications/{userId}'].get.responses,
+      components: openAPISpec.components,
+    });
+    const validationError = responseValidator.validateResponse(response.statusCode, response.body);
+    expect(validationError).toBeUndefined();
   });
 
   it('GET /notifications/1 - Devrait retourner une erreur 404 si l\'utilisateur n\'existe pas', async () => {

@@ -13,6 +13,7 @@ import path from 'path';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
 import { MockService } from './database/mock-service';
+import EventMockService from './event/mock-service';
 
 export class Builder {
     private database!: DatabaseService;
@@ -60,7 +61,8 @@ export class Builder {
 
     configureEvents = async (mock = false ) => {
         if(mock) {
-
+            console.log("Using mocked events stream");
+            this.events = new EventMockService();
         }else{
             console.log("Using RabbitMQTT events stream");
             const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost:5672';

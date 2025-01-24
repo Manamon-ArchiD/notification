@@ -14,6 +14,23 @@ export class MockService implements DatabaseService {
     }   
 
     getUserNotifications(userId: string): Promise<Notification[]> {
-        throw new Error("Method not implemented.");
+        if(userId == "1") {
+            return new Promise((resolve) => {
+                const notifications: Notification[] = [
+                    {
+                        notificationId: "mock-id",
+                        title: "Mock notification",
+                        createdAt: new Date(),
+                        userId: "1",
+                        message: "Mock notification"
+                    }
+                ];
+                resolve(notifications);
+            });
+        }else{
+            return new Promise((resolve) => {
+                resolve([]);
+            });
+        }
     }
 }
