@@ -9,6 +9,7 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - RABBITMQ_URL=amqp://rabbitmq:5672
   
   postgres:
     image: "postgres:13"
@@ -19,3 +20,10 @@ services:
       POSTGRES_DB: "postgres"
     ports:
       - "5432:5432"
+
+  rabbitmq:
+    image: rabbitmq:management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"

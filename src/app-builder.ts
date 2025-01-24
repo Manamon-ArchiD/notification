@@ -5,10 +5,14 @@ import { DatabaseService } from './database/database-service';
 import { PostgresService } from './database/postgres-service';
 import { MockService } from './database/mock-service';
 import { ServerApplication } from './app-server';
+import amqp from 'amqplib';
 import HelloController from './controllers/hello';
+import EventService from './event/event-service';
+import RabbitService from './event/rabbit-service';
 
 export class Builder {
     private database!: DatabaseService;
+    private events!: EventService;
 
     constructor(private app: Express = express()) {}
 
@@ -50,13 +54,43 @@ export class Builder {
         return this;
     }
 
+    configureEvents = async (mock = false ) => {
+        if(mock) {
+
+        }else{
+            console.log("Using RabbitMQTT events stream");
+            const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://localhost:5672';
+            const QUEUE_NAME = 'events_queue';
+
+            const getStream = async () => {
+                const connection = await amqp.connect(RABBITMQ_URL);
+                const channel = await connection.createChannel();
+
+                await channel.assertQueue(QUEUE_NAME, {durable: true});
+
+                return new RabbitService(QUEUE_NAME, channel);
+            }
+            while (this.events == undefined){
+                try {
+                    this.events = await getStream();
+                    console.log("Event stream init!");
+                } catch (e) {
+                    console.error(e);
+                    console.error("Event stream failed, retrying in 5 seconds");
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                }
+            }
+        }
+    }
+
     configureRoutes = () => {
-        this.app.get("/", (new HelloController(this.database)).handle);
+        this.app.get("/", (new HelloController(this.database, this.events)).handle);
         return this;
     }
 
-    build = async (port: number, useMemoryDB = false) => {
-        await this.configureDatabase(useMemoryDB);
+    build = async (port: number, mock = false) => {
+        await this.configureDatabase(mock);
+        await this.configureEvents(mock);
         this.configureExpress();
         this.configureRoutes();
         return new ServerApplication(this.app, port);
@@ -69,6 +103,10 @@ export class Builder {
 
     public get Database() : DatabaseService {
         return this.database;
+    }
+
+    public get Events() : EventService {
+        return this.events;
     }
 
 }

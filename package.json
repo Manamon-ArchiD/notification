@@ -8,7 +8,7 @@
     "build": "webpack",
     "lint": "npx eslint .",
     "start": "node dist/bundle.js",
-    "dev": "concurrently \"docker compose up --build postgres\" \"webpack --watch\" \"nodemon -q dist/bundle.js\"",
+    "dev": "concurrently \"docker compose up postgres rabbitmq\" \"webpack --watch\" \"nodemon -q dist/bundle.js\"",
     "watch": "webpack --watch",
     "docker": "docker compose up --build"
   },
@@ -16,10 +16,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.10.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "ts-postgres": "^2.0.4"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
