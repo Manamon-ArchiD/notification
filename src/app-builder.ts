@@ -27,13 +27,25 @@ export class Builder {
             this.database = new MockService();
         } else {
             console.log("Using Postgres database");
-            this.database = new PostgresService(await connect({
-                host: process.env.POSTGRES_HOST || 'localhost',
-                port: parseInt(process.env.POSTGRES_PORT || "5432"),
-                database: process.env.POSTGRES_DB || 'postgres',
-                user: process.env.POSTGRES_USER || 'postgres',
-                password: process.env.POSTGRES_PASSWORD || 'postgres'
-            }));
+            const getDatabase = async () => {
+                return new PostgresService(await connect({
+                    host: process.env.POSTGRES_HOST || 'localhost',
+                    port: parseInt(process.env.POSTGRES_PORT || "5432"),
+                    database: process.env.POSTGRES_DB || 'postgres',
+                    user: process.env.POSTGRES_USER || 'postgres',
+                    password: process.env.POSTGRES_PASSWORD || 'postgres'
+                }));
+            }
+            while (this.database == undefined){
+                try {
+                    this.database = await getDatabase();
+                    console.log("Database init!");
+                } catch (e) {
+                    console.error(e);
+                    console.error("Database init failed, retrying in 5 seconds");
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                }
+            }
         }
         return this;
     }
