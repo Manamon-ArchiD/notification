@@ -5,4 +5,8 @@ export class MockService implements DatabaseService {
     createNotification(notification: Omit<Notification, "notificationId" | "createdAt">): Promise<Notification> {
         throw new Error("Method not implemented.");
     }   
+
+    getUserNotifications(userId: string): Promise<Notification[]> {
+        throw new Error("Method not implemented.");
+    }
 }

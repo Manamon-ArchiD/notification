@@ -29,4 +29,23 @@ export class PostgresService implements DatabaseService {
             createdAt: row.get('created_at')
         } as Notification;
     }
+
+    // Récupérer les notifications d'un utilisateur
+    async getUserNotifications(userId: string): Promise<Notification[]> {
+        const query = `
+        SELECT id, user_id, title, message, created_at
+        FROM notifications
+        WHERE user_id = $1
+        ORDER BY created_at DESC;
+        `;
+
+        const result = await this.database.query(query, [userId]);
+        return result.rows.map(row => ({
+            notificationId: row.get('id'),
+            userId: row.get('user_id'),
+            title: row.get('title'),
+            message: row.get('message'),
+            createdAt: row.get('created_at')
+        } as Notification));
+    }
 }

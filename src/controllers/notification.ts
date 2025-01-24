@@ -6,6 +6,7 @@ import EventService from '../event/event-service';
 export class NotificationsController {
     constructor(private db: DatabaseService, private events: EventService) {
         this.createNotification = this.createNotification.bind(this);
+        this.getUserNotifications = this.getUserNotifications.bind(this);
     }
     // POST: Créer une notification
     async createNotification(req: Request, res: Response): Promise<void> {
@@ -23,6 +24,30 @@ export class NotificationsController {
         res.status(201).json(createdNotification);
         } catch (error) {
         console.error('Error creating notification:', error);
+        res.status(500).json({ error: 'Internal server error.' });
+        }
+    }
+
+    // GET: Récupérer les notifications d'un utilisateur
+    async getUserNotifications(req: Request, res: Response): Promise<void> {
+        try {
+        const { userId } = req.params;
+
+        if (!userId) {
+            res.status(400).json({ error: 'userId is required.' });
+            return;
+        }
+
+        const notifications = await this.db.getUserNotifications(userId);
+
+        if (notifications.length === 0) {
+            res.status(404).json({ error: 'No notifications found for this user.' });
+            return;
+        }
+
+        res.status(200).json(notifications);
+        } catch (error) {
+        console.error('Error fetching notifications:', error);
         res.status(500).json({ error: 'Internal server error.' });
         }
     }
