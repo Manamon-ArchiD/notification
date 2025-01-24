@@ -13,6 +13,7 @@ describe('API Tests', () => {
   beforeAll(async () => {
     const builder = new Builder();
     await builder.configureDatabase(true);
+    await builder.configureEvents(true);
     builder
       .configureExpress()
       .configureRoutes();
