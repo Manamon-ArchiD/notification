@@ -1,6 +1,7 @@
 openapi: 3.0.3
 servers:
-  - url: https://api.example.com
+  - url: http://localhost:3000
+    description: Serveur de développement
 info:
   title: Service Notifications API
   description: API pour gérer les notifications liées aux badges gagnés, invitations, mises à jour de matchs, etc.
